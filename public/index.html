@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four in a Row</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233558f0'/%3E%3Ccircle cx='11' cy='11' r='4.5' fill='%23ff5a67'/%3E%3Ccircle cx='21' cy='11' r='4.5' fill='%23ffc83d'/%3E%3Ccircle cx='11' cy='21' r='4.5' fill='%23ffc83d'/%3E%3Ccircle cx='21' cy='21' r='4.5' fill='%23ff5a67'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="brand-name">Four in a Row</span>
+    </div>
+    <div class="top-actions">
+      <button id="view-toggle" class="icon-btn txt" type="button" aria-pressed="true" title="Switch between 3D and flat board" hidden>3D</button>
+      <span id="conn" class="conn" data-state="live" role="status" hidden>
+        <span class="dot"></span><span id="conn-text">Live</span>
+      </span>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle light and dark theme" title="Toggle theme">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ Lobby ============ -->
+    <section id="lobby" class="lobby" hidden>
+      <div class="hero">
+        <h1>Four in a Row</h1>
+        <p>Drop discs and connect four in a line — across, up and down, or diagonally. Two players, live.</p>
+      </div>
+
+      <div class="card lobby-card">
+        <p id="invite-note" class="invite-note" hidden></p>
+
+        <label for="name">Your name</label>
+        <input id="name" type="text" maxlength="16" placeholder="e.g. Alex" autocomplete="nickname">
+
+        <div class="lobby-actions">
+          <button id="create" class="btn primary" type="button">Create online game</button>
+          <button id="local" class="btn" type="button">Play on this device</button>
+        </div>
+
+        <div class="divider"><span>or join a friend's game</span></div>
+
+        <form id="join-form" class="join">
+          <input id="code" type="text" maxlength="4" placeholder="CODE" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Game code">
+          <button id="join" class="btn" type="submit">Join</button>
+        </form>
+
+        <p id="lobby-error" class="error" role="alert" hidden></p>
+      </div>
+
+      <ul class="tips">
+        <li><strong>Online:</strong> create a game, then send your friend the invite link or 4-letter code.</li>
+        <li><strong>Same screen:</strong> pick "Play on this device" and take turns.</li>
+        <li><strong>Keyboard:</strong> ← → to choose a column, Enter to drop, or press 1–7.</li>
+      </ul>
+    </section>
+
+    <!-- ============ Game ============ -->
+    <section id="game" class="game" hidden>
+      <div class="game-top">
+        <div class="room-chip">
+          <span class="muted">Room</span>
+          <strong id="room-code">----</strong>
+          <button id="copy-link" class="chip-btn" type="button">Copy invite link</button>
+        </div>
+        <button id="leave" class="chip-btn" type="button">Leave</button>
+      </div>
+
+      <div class="players">
+        <div class="player" id="pl1">
+          <span class="disc-icon p1" aria-hidden="true"></span>
+          <div class="pl-info"><span class="pl-name">—</span><span class="pl-meta"></span></div>
+          <span class="score" aria-label="Player 1 score">0</span>
+        </div>
+        <div class="player" id="pl2">
+          <span class="disc-icon p2" aria-hidden="true"></span>
+          <div class="pl-info"><span class="pl-name">—</span><span class="pl-meta"></span></div>
+          <span class="score" aria-label="Player 2 score">0</span>
+        </div>
+      </div>
+
+      <div id="banner" class="banner" data-seat="0" role="status" aria-live="polite"></div>
+
+      <div class="board-wrap">
+        <div class="stage3d" id="stage3d" hidden></div>
+        <div class="drop-row" id="drop-row" aria-hidden="true"></div>
+        <div class="board" id="board" role="group" aria-label="Game board, 7 columns by 6 rows"></div>
+
+        <div class="waiting" id="waiting" hidden>
+          <div class="waiting-inner">
+            <div class="spinner" aria-hidden="true"></div>
+            <h2>Waiting for your opponent</h2>
+            <p class="muted">Share this code or link:</p>
+            <div class="big-code" id="big-code">----</div>
+            <div class="invite-link" id="invite-link"></div>
+            <button id="copy-link-2" class="btn primary" type="button">Copy invite link</button>
+            <p class="muted small" id="invite-hint"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-actions">
+        <button id="again" class="btn primary" type="button" hidden>Play again</button>
+      </div>
+
+      <div class="reactions" id="reactions" aria-label="Send a reaction" hidden></div>
+      <p class="hint muted">Click a column, use ← → and Enter, or press 1–7.</p>
+    </section>
+  </main>
+
+  <div id="fx" class="fx" aria-hidden="true"></div>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <script src="app.js"></script>
+  <script type="module" src="board3d.js"></script>
+</body>
+</html>

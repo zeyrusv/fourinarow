@@ -1,0 +1,13 @@
+{
+  "name": "four-in-a-row-live",
+  "version": "1.0.0",
+  "description": "Two-player Four in a Row with live updates. No dependencies.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "MIT"
+}
